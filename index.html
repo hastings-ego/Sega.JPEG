@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Stega — hide data in plain sight</title>
+<meta name="description" content="Client-side LSB steganography. Embed a message inside an image's pixels, entirely in your browser. No server, no upload, no logs." />
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<div class="noise" aria-hidden="true"></div>
+
+<header class="site-header">
+  <div class="logo">STEGA<span class="dot">·</span></div>
+  <div class="tag">client-side LSB steganography</div>
+  <a href="#" class="gh-link" id="gh-link">view source</a>
+</header>
+
+<main>
+
+  <section class="hero">
+    <h1>Hide data<br /><em>in plain sight.</em></h1>
+    <p class="lede">Embed a message inside an image's least significant bits. Nothing leaves this page — no server, no upload, no logs.</p>
+  </section>
+
+  <section class="tool">
+
+    <div class="mode-switch" role="tablist">
+      <button type="button" class="mode-btn active" data-mode="embed" role="tab" aria-selected="true">Embed</button>
+      <button type="button" class="mode-btn" data-mode="extract" role="tab" aria-selected="false">Extract</button>
+    </div>
+
+    <!-- EMBED PANEL -->
+    <div class="panel" id="embed-panel" data-panel="embed">
+
+      <div class="dropzone" id="embed-drop" tabindex="0" role="button" aria-label="Choose or drop a cover image">
+        <input type="file" id="embed-file" accept="image/*" hidden />
+        <canvas id="embed-canvas" hidden></canvas>
+        <canvas id="embed-canvas-bits" hidden></canvas>
+
+        <div class="drop-empty" id="embed-drop-empty">
+          <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><path d="M14 4V18M14 4L8 10M14 4L20 10" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 20V22.5C4 23.3284 4.67157 24 5.5 24H22.5C23.3284 24 24 23.3284 24 22.5V20" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+          <p>Drop a cover image<br /><span>or click to choose · PNG recommended</span></p>
+        </div>
+
+        <div class="drop-filled" id="embed-drop-filled" hidden>
+          <img id="embed-preview" alt="Cover image preview" />
+          <div class="dims" id="embed-dims"></div>
+          <button type="button" class="bit-toggle" id="embed-bit-toggle">reveal bit-plane</button>
+          <button type="button" class="clear-btn" id="embed-clear" aria-label="Remove image">✕</button>
+        </div>
+      </div>
+
+      <div class="controls">
+
+        <label class="field">
+          <span class="field-label">Message</span>
+          <textarea id="embed-message" placeholder="What do you want to hide?" rows="6"></textarea>
+        </label>
+
+        <label class="field">
+          <span class="field-label">Passphrase <span class="optional">optional — adds a light XOR cipher</span></span>
+          <input type="text" id="embed-pass" autocomplete="off" spellcheck="false" />
+        </label>
+
+        <div class="capacity">
+          <div class="capacity-bar"><div class="capacity-fill" id="capacity-fill"></div></div>
+          <div class="capacity-label" id="capacity-label">Upload an image to see capacity</div>
+        </div>
+
+        <button type="button" class="primary" id="embed-btn" disabled>Embed message</button>
+
+        <div class="result" id="embed-result" hidden>
+          <p class="result-note"><span id="bits-changed"></span></p>
+          <a class="secondary" id="download-link" download="stego.png">Download stego image</a>
+        </div>
+
+        <p class="error" id="embed-error" hidden></p>
+      </div>
+    </div>
+
+    <!-- EXTRACT PANEL -->
+    <div class="panel" id="extract-panel" data-panel="extract" hidden>
+
+      <div class="dropzone" id="extract-drop" tabindex="0" role="button" aria-label="Choose or drop a stego image">
+        <input type="file" id="extract-file" accept="image/*" hidden />
+        <canvas id="extract-canvas" hidden></canvas>
+
+        <div class="drop-empty" id="extract-drop-empty">
+          <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><path d="M14 24V10M14 24L8 18M14 24L20 18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 4V6.5C4 7.32843 4.67157 8 5.5 8H22.5C23.3284 8 24 7.32843 24 6.5V4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+          <p>Drop a stego image<br /><span>or click to choose</span></p>
+        </div>
+
+        <div class="drop-filled" id="extract-drop-filled" hidden>
+          <img id="extract-preview" alt="Stego image preview" />
+          <div class="dims" id="extract-dims"></div>
+          <button type="button" class="clear-btn" id="extract-clear" aria-label="Remove image">✕</button>
+        </div>
+      </div>
+
+      <div class="controls">
+
+        <label class="field">
+          <span class="field-label">Passphrase <span class="optional">only if one was used to embed</span></span>
+          <input type="text" id="extract-pass" autocomplete="off" spellcheck="false" />
+        </label>
+
+        <button type="button" class="primary" id="extract-btn" disabled>Extract message</button>
+
+        <label class="field">
+          <span class="field-label">Revealed message</span>
+          <pre class="reveal-box" id="reveal-box">—</pre>
+        </label>
+
+        <p class="error" id="extract-error" hidden></p>
+      </div>
+    </div>
+
+  </section>
+
+  <section class="notice">
+    <p><strong>Steganography isn't encryption.</strong> This hides the presence of data — it doesn't scramble it strongly. For genuinely sensitive information, encrypt it first and embed the ciphertext. Also: only PNG output preserves the hidden bits. Re-saving as JPEG will destroy the message.</p>
+  </section>
+
+</main>
+
+<footer>
+  <p>Runs entirely in your browser · MIT licensed</p>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>
