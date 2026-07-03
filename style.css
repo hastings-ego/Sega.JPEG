@@ -30,6 +30,11 @@
 
 * { box-sizing: border-box; }
 
+/* the [hidden] attribute must always win over component display rules below —
+   otherwise elements like .panel (display:grid) or .drop-filled (display:flex)
+   silently override it and stay visible/stacked. this is the fix. */
+[hidden] { display: none !important; }
+
 html { -webkit-font-smoothing: antialiased; }
 
 body {
@@ -75,6 +80,10 @@ a { color: inherit; }
   letter-spacing: 0.04em;
 }
 .logo .dot { color: var(--payload); }
+.logo .ext {
+  color: var(--text-onink-dim);
+  font-weight: 400;
+}
 
 .tag {
   color: var(--text-onink-dim);
