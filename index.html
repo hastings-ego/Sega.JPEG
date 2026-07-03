@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Stega — hide data in plain sight</title>
+<title>STEGA.JPEG — hide data in plain sight</title>
 <meta name="description" content="Client-side LSB steganography. Embed a message inside an image's pixels, entirely in your browser. No server, no upload, no logs." />
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -17,7 +17,7 @@
 <div class="noise" aria-hidden="true"></div>
 
 <header class="site-header">
-  <div class="logo">STEGA<span class="dot">·</span></div>
+  <div class="logo">STEGA<span class="ext">.JPEG</span><span class="dot">·</span></div>
   <div class="tag">client-side LSB steganography</div>
   <a href="#" class="gh-link" id="gh-link">view source</a>
 </header>
@@ -26,7 +26,7 @@
 
   <section class="hero">
     <h1>Hide data<br /><em>in plain sight.</em></h1>
-    <p class="lede">Embed a message inside an image's least significant bits. Nothing leaves this page — no server, no upload, no logs.</p>
+    <p class="lede">Embed a message inside an image's least significant bits. Nothing leaves this page — no server, no upload, no logs. Named like the last file anyone would open twice.</p>
   </section>
 
   <section class="tool">
@@ -42,7 +42,6 @@
       <div class="dropzone" id="embed-drop" tabindex="0" role="button" aria-label="Choose or drop a cover image">
         <input type="file" id="embed-file" accept="image/*" hidden />
         <canvas id="embed-canvas" hidden></canvas>
-        <canvas id="embed-canvas-bits" hidden></canvas>
 
         <div class="drop-empty" id="embed-drop-empty">
           <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><path d="M14 4V18M14 4L8 10M14 4L20 10" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 20V22.5C4 23.3284 4.67157 24 5.5 24H22.5C23.3284 24 24 23.3284 24 22.5V20" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
@@ -125,7 +124,7 @@
   </section>
 
   <section class="notice">
-    <p><strong>Steganography isn't encryption.</strong> This hides the presence of data — it doesn't scramble it strongly. For genuinely sensitive information, encrypt it first and embed the ciphertext. Also: only PNG output preserves the hidden bits. Re-saving as JPEG will destroy the message.</p>
+    <p><strong>Steganography isn't encryption.</strong> This hides the presence of data — it doesn't scramble it strongly. For genuinely sensitive information, encrypt it first and embed the ciphertext. Also: only PNG output preserves the hidden bits. Re-saving as JPEG will destroy the message — yes, even on a project called STEGA.JPEG. Always download and share the .png.</p>
   </section>
 
 </main>
